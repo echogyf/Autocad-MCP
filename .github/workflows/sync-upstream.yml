@@ -4,7 +4,7 @@ name: Sync Upstream
 on:
   # 每小时检查一次上游更新（UTC）
   schedule:
-    - cron: '0/5 * * * *'
+    - cron: '3-59/5 * * * *'
 
   # 支持在 GitHub Actions 页面手动触发
   workflow_dispatch:
