@@ -1,0 +1,37 @@
+
+name: Sync Upstream
+
+on:
+  # 每 6 小时检查一次上游更新（UTC）
+  schedule:
+    - cron: '23 */1 * * *'
+
+  # 支持在 GitHub Actions 页面手动触发
+  workflow_dispatch:
+
+# 允许工作流更新仓库内容
+permissions:
+  contents: write
+
+# 防止多个同步任务同时执行
+concurrency:
+  group: sync-upstream-main
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Sync upstream main
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Sync fork from upstream
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # 调用 GitHub 官方 Fork 同步 API
+          # 自动将上游 main 的更新合并到当前 main
+          gh api \
+            --method POST \
+            "repos/${GITHUB_REPOSITORY}/merge-upstream" \
+            --field branch=main \
+            --jq '.message'
